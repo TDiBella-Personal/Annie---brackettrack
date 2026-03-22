@@ -502,37 +502,47 @@ def generate_sample_data(gender):
                 if team["name"] == loser["name"]:
                     team["eliminated"] = True
 
-    # Some upcoming games for today
+    # 8 upcoming games for today (2 per region, Round of 32)
     todays_games = []
     regions_list = list(sample_teams.keys())
-    if len(regions_list) >= 2:
-        r = regions_list[0]
+    game_times = [
+        ("12:10 PM ET", "CBS"), ("2:40 PM ET", "TBS"),
+        ("5:15 PM ET", "TNT"), ("6:45 PM ET", "truTV"),
+        ("7:10 PM ET", "CBS"), ("7:45 PM ET", "TBS"),
+        ("9:40 PM ET", "TNT"), ("9:55 PM ET", "truTV"),
+    ]
+    game_num = 0
+    for r in regions_list:
         teams = sample_teams[r]
+        # Game 1: 1-seed vs 8-seed
+        time_str, network = game_times[game_num]
         todays_games.append({
-            "game_id": f"{gender}_today_1",
+            "game_id": f"{gender}_today_{game_num + 1}",
             "status": "pre",
-            "start_time": "7:10 PM ET",
-            "network": "CBS",
+            "start_time": time_str,
+            "network": network,
             "round": "Round of 32",
             "region": r,
             "home": {"name": teams[0][0], "seed": teams[0][1], "score": "", "winner": False},
             "away": {"name": teams[7][0], "seed": teams[7][1], "score": "", "winner": False},
         })
-        r2 = regions_list[1]
-        teams2 = sample_teams[r2]
+        game_num += 1
+        # Game 2: 2-seed vs 7-seed
+        time_str, network = game_times[game_num]
         todays_games.append({
-            "game_id": f"{gender}_today_2",
+            "game_id": f"{gender}_today_{game_num + 1}",
             "status": "pre",
-            "start_time": "9:40 PM ET",
-            "network": "TBS",
+            "start_time": time_str,
+            "network": network,
             "round": "Round of 32",
-            "region": r2,
-            "home": {"name": teams2[0][0], "seed": teams2[0][1], "score": "", "winner": False},
-            "away": {"name": teams2[1][0], "seed": teams2[1][1], "score": "", "winner": False},
+            "region": r,
+            "home": {"name": teams[1][0], "seed": teams[1][1], "score": "", "winner": False},
+            "away": {"name": teams[6][0], "seed": teams[6][1], "score": "", "winner": False},
         })
+        game_num += 1
 
-    # Last night's results (some R64 games)
-    last_results = all_games[-4:]  # last 4 games as "last night"
+    # Last night's results (8 games - last 2 from each region)
+    last_results = all_games[-8:]
 
     bracket_state = build_bracket_state(all_games)
     bracket_state["teams"] = all_teams

@@ -4,18 +4,19 @@ import os
 
 from PIL import Image, ImageDraw, ImageFont
 
-# Colors - black theme
-BG_COLOR = (0, 0, 0)           # #000000
-ACCENT = (79, 200, 130)        # #4fc882
-MUTED = (42, 122, 74)          # #2a7a4a
-LIGHT = (224, 224, 224)        # #e0e0e0
+# Colors - white/high-contrast theme
+BG_COLOR = (255, 255, 255)      # White background
+ACCENT = (26, 54, 93)          # Dark navy for headers
+HIGHLIGHT = (176, 125, 46)     # Warm gold for winners
+MUTED = (170, 170, 170)        # Medium gray for borders
+LIGHT = (40, 40, 40)           # Dark text
 WHITE = (255, 255, 255)
-ELIMINATED_COLOR = (80, 80, 80)
-LINE_COLOR = (42, 122, 74, 180)
-SURFACE = (17, 17, 17)         # #111111
-SLOT_BG = (20, 20, 20)
-SLOT_WIN_BG = (15, 50, 30)
-SLOT_ELIM_BG = (10, 10, 10)
+ELIMINATED_COLOR = (190, 190, 190)
+LINE_COLOR = (170, 170, 170, 200)
+SURFACE = (248, 248, 248)
+SLOT_BG = (250, 250, 250)
+SLOT_WIN_BG = (255, 248, 235)  # Warm cream tint for winners
+SLOT_ELIM_BG = (245, 245, 245)
 
 IMG_W = 1920
 IMG_H = 1080
@@ -41,7 +42,7 @@ def _draw_team_slot(draw, x, y, w, h, name, seed, score="", is_winner=False, is_
     """Draw a single team slot in the bracket."""
     # Background
     if is_winner:
-        draw.rectangle([x, y, x + w, y + h], fill=SLOT_WIN_BG, outline=ACCENT, width=2)
+        draw.rectangle([x, y, x + w, y + h], fill=SLOT_WIN_BG, outline=HIGHLIGHT, width=2)
     elif is_eliminated:
         draw.rectangle([x, y, x + w, y + h], fill=SLOT_ELIM_BG, outline=ELIMINATED_COLOR, width=1)
     else:
@@ -72,7 +73,7 @@ def _draw_team_slot(draw, x, y, w, h, name, seed, score="", is_winner=False, is_
 
     # Score
     if score and str(score) != "":
-        draw.text((x + w - 35, y + (h - 16) // 2), str(score), fill=WHITE if is_winner else text_color, font=score_font)
+        draw.text((x + w - 35, y + (h - 16) // 2), str(score), fill=ACCENT if is_winner else text_color, font=score_font)
 
 
 def _organize_bracket_data(bracket_state):
@@ -244,7 +245,7 @@ def render_full_bracket(bracket_state, gender, output_path):
 
     draw.rectangle([ff_x - 2, ff_y - 2, ff_x + ff_w + 2, ff_y + ff_h + 2],
                    outline=ACCENT, width=2)
-    draw.rectangle([ff_x, ff_y, ff_x + ff_w, ff_y + ff_h], fill=SLOT_BG)
+    draw.rectangle([ff_x, ff_y, ff_x + ff_w, ff_y + ff_h], fill=SURFACE)
 
     ff_font = _get_font(16, bold=True)
     draw.text((ff_x + 40, ff_y + 5), "FINAL FOUR", fill=ACCENT, font=ff_font)
@@ -253,7 +254,7 @@ def render_full_bracket(bracket_state, gender, output_path):
     for i in range(4):
         sy = ff_y + 28 + i * 22
         draw.rectangle([ff_x + 10, sy, ff_x + ff_w - 10, sy + 18],
-                       fill=BG_COLOR, outline=MUTED, width=1)
+                       fill=SLOT_BG, outline=MUTED, width=1)
         draw.text((ff_x + 16, sy + 2), "TBD", fill=MUTED, font=slot_font)
 
     # Watermark
@@ -294,70 +295,70 @@ def render_today_view(todays_games, bracket_state, gender, output_path):
         sw = bbox2[2] - bbox2[0]
         draw.text(((IMG_W - sw) // 2, IMG_H // 2 + 30), sub_msg, fill=MUTED, font=sub_font)
     else:
-        # Layout today's games as large cards
+        # Layout today's games as large cards (4 rows x 2 cols for up to 8 games)
         card_w = 700
-        card_h = 180
+        card_h = 140
         cards_per_row = 2
         start_x = (IMG_W - cards_per_row * (card_w + 40)) // 2 + 20
-        start_y = 100
+        start_y = 90
 
-        for i, game in enumerate(todays_games[:6]):
+        for i, game in enumerate(todays_games[:8]):
             col = i % cards_per_row
             row = i // cards_per_row
             cx = start_x + col * (card_w + 40)
-            cy = start_y + row * (card_h + 30)
+            cy = start_y + row * (card_h + 15)
 
             # Card background
             draw.rounded_rectangle([cx, cy, cx + card_w, cy + card_h],
                                    radius=10, fill=SLOT_BG, outline=ACCENT, width=2)
 
             # Round & region label
-            round_font = _get_font(14)
+            round_font = _get_font(13)
             round_text = f"{game.get('round', '')} - {game.get('region', '')}"
-            draw.text((cx + 15, cy + 10), round_text, fill=MUTED, font=round_font)
+            draw.text((cx + 15, cy + 8), round_text, fill=MUTED, font=round_font)
 
             # Time & network
-            time_font = _get_font(16, bold=True)
+            time_font = _get_font(14, bold=True)
             time_text = f"{game.get('start_time', 'TBD')} on {game.get('network', 'TBD')}"
             bbox = time_font.getbbox(time_text)
             ttw = bbox[2] - bbox[0]
-            draw.text((cx + card_w - ttw - 15, cy + 10), time_text, fill=ACCENT, font=time_font)
+            draw.text((cx + card_w - ttw - 15, cy + 8), time_text, fill=HIGHLIGHT, font=time_font)
 
             # Team matchup
-            team_font = _get_font(28, bold=True)
-            seed_font = _get_font(18)
+            team_font = _get_font(22, bold=True)
+            seed_font = _get_font(15)
 
             home = game.get("home", {})
             away = game.get("away", {})
 
             # Home team
-            home_y = cy + 50
-            draw.text((cx + 15, home_y + 5), f"({home.get('seed', '?')})", fill=MUTED, font=seed_font)
-            draw.text((cx + 55, home_y), home.get("name", "TBD"), fill=LIGHT, font=team_font)
+            home_y = cy + 40
+            draw.text((cx + 15, home_y + 3), f"({home.get('seed', '?')})", fill=MUTED, font=seed_font)
+            draw.text((cx + 50, home_y), home.get("name", "TBD"), fill=LIGHT, font=team_font)
 
             if home.get("score"):
-                score_font = _get_font(28, bold=True)
+                score_font = _get_font(22, bold=True)
                 score_text = str(home["score"])
                 bbox = score_font.getbbox(score_text)
                 sw = bbox[2] - bbox[0]
-                color = ACCENT if home.get("winner") else LIGHT
+                color = HIGHLIGHT if home.get("winner") else LIGHT
                 draw.text((cx + card_w - sw - 20, home_y), score_text, fill=color, font=score_font)
 
             # VS
-            vs_font = _get_font(16)
-            draw.text((cx + 15, cy + 95), "vs", fill=MUTED, font=vs_font)
+            vs_font = _get_font(14)
+            draw.text((cx + 15, cy + 72), "vs", fill=MUTED, font=vs_font)
 
             # Away team
-            away_y = cy + 115
-            draw.text((cx + 15, away_y + 5), f"({away.get('seed', '?')})", fill=MUTED, font=seed_font)
-            draw.text((cx + 55, away_y), away.get("name", "TBD"), fill=LIGHT, font=team_font)
+            away_y = cy + 90
+            draw.text((cx + 15, away_y + 3), f"({away.get('seed', '?')})", fill=MUTED, font=seed_font)
+            draw.text((cx + 50, away_y), away.get("name", "TBD"), fill=LIGHT, font=team_font)
 
             if away.get("score"):
-                score_font = _get_font(28, bold=True)
+                score_font = _get_font(22, bold=True)
                 score_text = str(away["score"])
                 bbox = score_font.getbbox(score_text)
                 sw = bbox[2] - bbox[0]
-                color = ACCENT if away.get("winner") else LIGHT
+                color = HIGHLIGHT if away.get("winner") else LIGHT
                 draw.text((cx + card_w - sw - 20, away_y), score_text, fill=color, font=score_font)
 
     # Remaining teams summary at bottom
@@ -560,24 +561,78 @@ def render_zoom_bracket(bracket_state, gender, output_path):
             draw.text((ff_x + 16, sy + 1), "TBD", fill=MUTED, font=tfont)
 
     else:
-        # Round of 32 - show teams grouped by region
-        region_font = _get_font(14, bold=True)
-        cols = min(len(regions), 4)
-        col_w = (IMG_W - 60) // cols
+        # Round of 32 - bracket layout matching full bracket (2x2 regions)
+        region_positions = [
+            (20, start_y, IMG_W // 2 - 20, start_y + available_h // 2 - 10, "left"),
+            (20, start_y + available_h // 2, IMG_W // 2 - 20, start_y + available_h - 10, "left"),
+            (IMG_W // 2 + 20, start_y, IMG_W - 20, start_y + available_h // 2 - 10, "right"),
+            (IMG_W // 2 + 20, start_y + available_h // 2, IMG_W - 20, start_y + available_h - 10, "right"),
+        ]
+
+        region_font = _get_font(16, bold=True)
 
         for idx, region_name in enumerate(regions[:4]):
-            rx = 30 + idx * col_w
+            if idx >= len(region_positions):
+                break
+            rx, ry, rx2, ry2, direction = region_positions[idx]
+            rw = rx2 - rx
+            rh = ry2 - ry
             rteams = region_teams[region_name]
-            draw.text((rx, start_y), region_name.upper(), fill=ACCENT, font=region_font)
+            rteams.sort(key=lambda t: int(t.get("seed", 99)) if str(t.get("seed", "99")).isdigit() else 99)
 
-            team_gap = min((available_h - 30) // max(len(rteams), 1), slot_h + 8)
-            sw = min(slot_w, col_w - 20)
+            draw.text((rx + 10, ry + 2), region_name.upper(), fill=ACCENT, font=region_font)
+
+            # R32 column - teams in bracket order
+            col_w = rw // 4
+            gap = (rh - 30) / max(len(rteams), 1)
+            r32_x = rx + 5 if direction == "left" else rx + rw - col_w - 5
+            sw = col_w - 10
 
             for ti, team in enumerate(rteams):
-                ty = start_y + 22 + ti * team_gap
-                _draw_team_slot(draw, rx, ty, sw, slot_h,
+                ty = ry + 24 + ti * gap
+                _draw_team_slot(draw, r32_x, ty, sw, slot_h,
                                 team["name"], team.get("seed", ""),
                                 is_winner=True)
+
+            # Sweet 16 slots with connector lines
+            s16_x = rx + col_w + 5 if direction == "left" else rx + rw - 2 * col_w - 5
+            s16_gap = gap * 2
+            for i in range(len(rteams) // 2):
+                ty = ry + 24 + i * s16_gap + gap / 2
+                draw.rectangle([s16_x, ty, s16_x + sw, ty + slot_h],
+                               fill=SLOT_BG, outline=MUTED, width=1)
+                tfont = _get_font(13)
+                draw.text((s16_x + 6, ty + 8), "TBD", fill=MUTED, font=tfont)
+                for j in range(2):
+                    sy = ry + 24 + (i * 2 + j) * gap + slot_h // 2
+                    if direction == "left":
+                        draw.line([(r32_x + sw, sy), (s16_x, ty + slot_h // 2)], fill=MUTED, width=1)
+                    else:
+                        draw.line([(r32_x, sy), (s16_x + sw, ty + slot_h // 2)], fill=MUTED, width=1)
+
+            # Elite 8 slots
+            e8_x = rx + 2 * col_w + 5 if direction == "left" else rx + rw - 3 * col_w - 5
+            e8_gap = gap * 4
+            for i in range(max(len(rteams) // 4, 1)):
+                ty = ry + 24 + i * e8_gap + gap * 1.5
+                draw.rectangle([e8_x, ty, e8_x + sw, ty + slot_h],
+                               fill=SLOT_BG, outline=MUTED, width=1)
+                tfont = _get_font(13)
+                draw.text((e8_x + 6, ty + 8), "TBD", fill=MUTED, font=tfont)
+
+        # Final Four in center
+        ff_x = IMG_W // 2 - slot_w // 2
+        ff_y = IMG_H // 2 - 50
+        ff_font = _get_font(16, bold=True)
+        draw.rectangle([ff_x - 5, ff_y - 5, ff_x + slot_w + 5, ff_y + 110],
+                       outline=ACCENT, width=2)
+        draw.text((ff_x + 50, ff_y + 5), "FINAL FOUR", fill=ACCENT, font=ff_font)
+        tfont = _get_font(13)
+        for i in range(4):
+            sy = ff_y + 28 + i * 20
+            draw.rectangle([ff_x + 10, sy, ff_x + slot_w - 10, sy + 17],
+                           fill=SURFACE, outline=MUTED, width=1)
+            draw.text((ff_x + 16, sy + 1), "TBD", fill=MUTED, font=tfont)
 
     # Summary
     summary_font = _get_font(14)

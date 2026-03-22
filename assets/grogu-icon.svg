@@ -7,6 +7,17 @@
   <ellipse cx="110" cy="60" rx="22" ry="9" fill="#3a8a5a" transform="rotate(30 110 60)"/>
   <ellipse cx="108" cy="60" rx="18" ry="6" fill="#4fc882" transform="rotate(30 108 60)"/>
   <ellipse cx="106" cy="59" rx="12" ry="3.5" fill="#6be0a0" transform="rotate(30 106 59)"/>
+  <!-- Robe body (behind head) -->
+  <path d="M 28 72 C 22 85 20 105 28 118 L 92 118 C 100 105 98 85 92 72 Q 60 90 28 72Z" fill="#7A6345"/>
+  <path d="M 32 74 Q 60 88 88 74 C 92 88 92 108 88 118 L 32 118 C 28 108 28 88 32 74Z" fill="#8B7355"/>
+  <!-- Robe front panel -->
+  <path d="M 42 78 Q 60 86 78 78 L 72 118 L 48 118 Z" fill="#A0896C"/>
+  <!-- Collar -->
+  <path d="M 32 74 Q 36 66 44 72" stroke="#6B5535" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M 88 74 Q 84 66 76 72" stroke="#6B5535" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Fold lines -->
+  <path d="M 58 86 L 56 118" stroke="#6B5535" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M 62 86 L 64 118" stroke="#6B5535" stroke-width="0.8" fill="none" opacity="0.4"/>
   <!-- Head -->
   <ellipse cx="60" cy="55" rx="30" ry="35" fill="#3a8a5a"/>
   <ellipse cx="60" cy="55" rx="28" ry="33" fill="#4fc882"/>
@@ -26,12 +37,12 @@
   <ellipse cx="60" cy="60" rx="1.5" ry="1" fill="#3a8a5a"/>
   <!-- Mouth -->
   <path d="M 52 66 Q 60 72 68 66" stroke="#3a8a5a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-  <!-- Robe -->
-  <path d="M 38 82 Q 60 95 82 82" stroke="#8B7355" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M 42 86 Q 60 96 78 86" stroke="#A0896C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Hands -->
+  <ellipse cx="30" cy="98" rx="6" ry="4" fill="#5ad492" transform="rotate(-10 30 98)"/>
+  <ellipse cx="90" cy="98" rx="6" ry="4" fill="#5ad492" transform="rotate(10 90 98)"/>
   <!-- Basketball -->
-  <circle cx="85" cy="85" r="10" fill="#e87830" stroke="#c06020" stroke-width="1"/>
-  <path d="M 75 85 Q 85 80 95 85" stroke="#c06020" stroke-width="0.8" fill="none"/>
-  <path d="M 75 85 Q 85 90 95 85" stroke="#c06020" stroke-width="0.8" fill="none"/>
-  <line x1="85" y1="75" x2="85" y2="95" stroke="#c06020" stroke-width="0.8"/>
+  <circle cx="95" cy="100" r="9" fill="#e87830" stroke="#c06020" stroke-width="1"/>
+  <path d="M 86 100 Q 95 96 104 100" stroke="#c06020" stroke-width="0.8" fill="none"/>
+  <path d="M 86 100 Q 95 104 104 100" stroke="#c06020" stroke-width="0.8" fill="none"/>
+  <line x1="95" y1="91" x2="95" y2="109" stroke="#c06020" stroke-width="0.8"/>
 </svg>
