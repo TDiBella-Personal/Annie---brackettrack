@@ -6,12 +6,12 @@
     <title>Annie's Madness Tracker</title>
     <style>
         :root {
-            --bg-primary: #000000;
-            --bg-surface: #111111;
-            --accent: #4fc882;
-            --accent-muted: #2a7a4a;
+            --bg-primary: #0d0d12;
+            --bg-surface: #1a1a22;
+            --accent: #d4a563;
+            --accent-muted: #8a6e3e;
             --light: #e0e0e0;
-            --text-dark: #000000;
+            --text-dark: #0d0d12;
             --white: #ffffff;
             --eliminated: rgba(255, 255, 255, 0.25);
         }
@@ -43,7 +43,7 @@
         }
 
         .grogu-container svg {
-            filter: drop-shadow(0 0 12px rgba(79, 200, 130, 0.5));
+            filter: drop-shadow(0 0 12px rgba(212, 165, 99, 0.4));
         }
 
         .header h1 {
@@ -87,7 +87,7 @@
         }
 
         .toggle-btn:hover:not(.active) {
-            background: rgba(79, 200, 130, 0.15);
+            background: rgba(212, 165, 99, 0.15);
         }
 
         /* Sections */
@@ -147,7 +147,7 @@
         }
 
         .zoom-btn:hover:not(.active) {
-            background: rgba(79, 200, 130, 0.15);
+            background: rgba(212, 165, 99, 0.15);
         }
 
         .download-btn {
@@ -313,6 +313,17 @@
             <ellipse cx="110" cy="60" rx="22" ry="9" fill="#3a8a5a" transform="rotate(30 110 60)"/>
             <ellipse cx="108" cy="60" rx="18" ry="6" fill="#4fc882" transform="rotate(30 108 60)"/>
             <ellipse cx="106" cy="59" rx="12" ry="3.5" fill="#6be0a0" transform="rotate(30 106 59)"/>
+            <!-- Robe body (behind head) -->
+            <path d="M 28 72 C 22 85 20 105 28 118 L 92 118 C 100 105 98 85 92 72 Q 60 90 28 72Z" fill="#7A6345"/>
+            <path d="M 32 74 Q 60 88 88 74 C 92 88 92 108 88 118 L 32 118 C 28 108 28 88 32 74Z" fill="#8B7355"/>
+            <!-- Robe front panel -->
+            <path d="M 42 78 Q 60 86 78 78 L 72 118 L 48 118 Z" fill="#A0896C"/>
+            <!-- Collar -->
+            <path d="M 32 74 Q 36 66 44 72" stroke="#6B5535" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <path d="M 88 74 Q 84 66 76 72" stroke="#6B5535" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+            <!-- Fold lines -->
+            <path d="M 58 86 L 56 118" stroke="#6B5535" stroke-width="1" fill="none" opacity="0.5"/>
+            <path d="M 62 86 L 64 118" stroke="#6B5535" stroke-width="0.8" fill="none" opacity="0.4"/>
             <!-- Head -->
             <ellipse cx="60" cy="55" rx="30" ry="35" fill="#3a8a5a"/>
             <ellipse cx="60" cy="55" rx="28" ry="33" fill="#4fc882"/>
@@ -332,20 +343,20 @@
             <ellipse cx="60" cy="60" rx="1.5" ry="1" fill="#3a8a5a"/>
             <!-- Mouth -->
             <path d="M 52 66 Q 60 72 68 66" stroke="#3a8a5a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-            <!-- Robe -->
-            <path d="M 38 82 Q 60 95 82 82" stroke="#8B7355" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <path d="M 42 86 Q 60 96 78 86" stroke="#A0896C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Hands -->
+            <ellipse cx="30" cy="98" rx="6" ry="4" fill="#5ad492" transform="rotate(-10 30 98)"/>
+            <ellipse cx="90" cy="98" rx="6" ry="4" fill="#5ad492" transform="rotate(10 90 98)"/>
             <!-- Basketball -->
-            <circle cx="85" cy="85" r="10" fill="#e87830" stroke="#c06020" stroke-width="1"/>
-            <path d="M 75 85 Q 85 80 95 85" stroke="#c06020" stroke-width="0.8" fill="none"/>
-            <path d="M 75 85 Q 85 90 95 85" stroke="#c06020" stroke-width="0.8" fill="none"/>
-            <line x1="85" y1="75" x2="85" y2="95" stroke="#c06020" stroke-width="0.8"/>
+            <circle cx="95" cy="100" r="9" fill="#e87830" stroke="#c06020" stroke-width="1"/>
+            <path d="M 86 100 Q 95 96 104 100" stroke="#c06020" stroke-width="0.8" fill="none"/>
+            <path d="M 86 100 Q 95 104 104 100" stroke="#c06020" stroke-width="0.8" fill="none"/>
+            <line x1="95" y1="91" x2="95" y2="109" stroke="#c06020" stroke-width="0.8"/>
         </svg>
     </div>
     <h1>Annie's Madness Tracker</h1>
 </header>
 
-<p class="updated-time">Last updated: March 22, 2026 at 12:18 PM EST</p>
+<p class="updated-time">Last updated: March 22, 2026 at 12:41 PM EST</p>
 
 
 
@@ -393,6 +404,66 @@
         <h2>Last Night's Results</h2>
         
         <div class="results-grid">
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - West</div>
+                <div class="team-row">
+                    <span class="seed">(1)</span>
+                    <span class="team-name winner">Tennessee</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(16)</span>
+                    <span class="team-name loser">SIUE</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">CBS</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - West</div>
+                <div class="team-row">
+                    <span class="seed">(8)</span>
+                    <span class="team-name winner">Louisville</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(9)</span>
+                    <span class="team-name loser">Georgia</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">TBS</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - West</div>
+                <div class="team-row">
+                    <span class="seed">(5)</span>
+                    <span class="team-name winner">Michigan</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(12)</span>
+                    <span class="team-name loser">McNeese</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">TNT</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - West</div>
+                <div class="team-row">
+                    <span class="seed">(4)</span>
+                    <span class="team-name winner">Creighton</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(13)</span>
+                    <span class="team-name loser">North Carolina</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">truTV</div>
+            </div>
             
             <div class="score-card">
                 <div class="round-label">Round of 64 - West</div>
@@ -539,6 +610,66 @@
             <div class="score-card">
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
+                    <span class="seed">(1)</span>
+                    <span class="team-name winner">Stanford</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(16)</span>
+                    <span class="team-name loser">Norfolk St</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">CBS</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - Portland 4</div>
+                <div class="team-row">
+                    <span class="seed">(8)</span>
+                    <span class="team-name winner">Florida</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(9)</span>
+                    <span class="team-name loser">Arizona</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">TBS</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - Portland 4</div>
+                <div class="team-row">
+                    <span class="seed">(5)</span>
+                    <span class="team-name winner">Virginia Tech</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(12)</span>
+                    <span class="team-name loser">Toledo</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">TNT</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - Portland 4</div>
+                <div class="team-row">
+                    <span class="seed">(4)</span>
+                    <span class="team-name winner">Indiana</span>
+                    <span class="score winner">80</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">(13)</span>
+                    <span class="team-name loser">Portland</span>
+                    <span class="score loser">72</span>
+                </div>
+                <div class="game-info">truTV</div>
+            </div>
+            
+            <div class="score-card">
+                <div class="round-label">Round of 64 - Portland 4</div>
+                <div class="team-row">
                     <span class="seed">(6)</span>
                     <span class="team-name winner">TCU</span>
                     <span class="score winner">80</span>
@@ -642,7 +773,7 @@
 <!-- Footer -->
 <footer class="footer">
     <p class="tagline">This is the way.</p>
-    <p class="timestamp">Updated: March 22, 2026 at 12:18 PM EST</p>
+    <p class="timestamp">Updated: March 22, 2026 at 12:41 PM EST</p>
 </footer>
 
 <script>
