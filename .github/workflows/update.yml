@@ -41,6 +41,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SPORTRADAR_API_KEY: ${{ secrets.SPORTRADAR_API_KEY }}
+          USE_SAMPLE_DATA: "true"  # Set to "false" when SPORTRADAR_API_KEY secret is configured
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

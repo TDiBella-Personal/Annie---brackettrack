@@ -24,11 +24,11 @@ ROUNDS = [
 ]
 
 
-def _get_with_retry(url, params=None, max_retries=3, delay=1.0):
+def _get_with_retry(url, params=None, max_retries=2, delay=1.0):
     """GET request with retry logic."""
     for attempt in range(max_retries):
         try:
-            resp = requests.get(url, params=params, timeout=30)
+            resp = requests.get(url, params=params, timeout=10)
             if resp.status_code == 200:
                 return resp.json()
             if resp.status_code == 429:
