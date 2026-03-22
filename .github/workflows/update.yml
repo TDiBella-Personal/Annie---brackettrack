@@ -5,7 +5,7 @@ on:
     # 09:30 UTC = 5:30 AM EDT (during EDT / March-April)
     - cron: '30 9 * * *'
   push:
-    branches: [main, master]
+    branches: [main, master, 'claude/**']
   workflow_dispatch:  # manual trigger for testing
 
 permissions:
