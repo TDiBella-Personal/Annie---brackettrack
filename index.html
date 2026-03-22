@@ -293,9 +293,52 @@
             color: var(--accent-muted);
         }
 
+        /* Highlight photos */
+        .highlight-photos {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 16px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .highlight-photo {
+            flex: 1;
+            max-width: 580px;
+        }
+
+        .highlight-photo img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--accent-muted);
+        }
+
+        .photo-caption {
+            font-size: 0.82rem;
+            color: var(--light);
+            margin-top: 6px;
+        }
+
+        .photo-credit {
+            font-size: 0.7rem;
+            color: var(--accent-muted);
+        }
+
+        /* Team logos */
+        .team-logo {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
         @media (max-width: 768px) {
             .header h1 { font-size: 1.4rem; }
             .results-grid, .news-grid { grid-template-columns: 1fr; }
+            .highlight-photos { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
@@ -356,7 +399,9 @@
     <h1>Annie's Madness Tracker</h1>
 </header>
 
-<p class="updated-time">Last updated: March 22, 2026 at 12:41 PM EST</p>
+<p class="updated-time">Last updated: March 22, 2026 at 08:37 PM EST</p>
+
+
 
 
 
@@ -409,11 +454,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(1)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/tennessee.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Tennessee</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(16)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/siu-edwardsville.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">SIUE</span>
                     <span class="score loser">72</span>
                 </div>
@@ -424,11 +471,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(8)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/louisville.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Louisville</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(9)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/georgia.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Georgia</span>
                     <span class="score loser">72</span>
                 </div>
@@ -439,11 +488,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(5)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/michigan.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Michigan</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(12)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/mcneese.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">McNeese</span>
                     <span class="score loser">72</span>
                 </div>
@@ -454,11 +505,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(4)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/creighton.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Creighton</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(13)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/north-carolina.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">North Carolina</span>
                     <span class="score loser">72</span>
                 </div>
@@ -469,11 +522,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(6)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/missouri.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Missouri</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(11)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/xavier.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Xavier</span>
                     <span class="score loser">72</span>
                 </div>
@@ -484,11 +539,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(3)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/kentucky.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Kentucky</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(14)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/akron.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Akron</span>
                     <span class="score loser">72</span>
                 </div>
@@ -499,11 +556,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(7)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/kansas.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Kansas</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(10)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/texas.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Texas</span>
                     <span class="score loser">72</span>
                 </div>
@@ -514,11 +573,13 @@
                 <div class="round-label">Round of 64 - West</div>
                 <div class="team-row">
                     <span class="seed">(2)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/iowa-st.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Iowa St</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(15)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/wofford.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Wofford</span>
                     <span class="score loser">72</span>
                 </div>
@@ -611,11 +672,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(1)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/stanford.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Stanford</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(16)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/norfolk-st.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Norfolk St</span>
                     <span class="score loser">72</span>
                 </div>
@@ -626,11 +689,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(8)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/florida.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Florida</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(9)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/arizona.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Arizona</span>
                     <span class="score loser">72</span>
                 </div>
@@ -641,11 +706,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(5)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/virginia-tech.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Virginia Tech</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(12)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/toledo.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Toledo</span>
                     <span class="score loser">72</span>
                 </div>
@@ -656,11 +723,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(4)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/indiana.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Indiana</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(13)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/portland.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Portland</span>
                     <span class="score loser">72</span>
                 </div>
@@ -671,11 +740,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(6)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/tcu.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">TCU</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(11)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/middle-tennessee.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Middle Tenn</span>
                     <span class="score loser">72</span>
                 </div>
@@ -686,11 +757,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(3)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/oregon.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Oregon</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(14)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/fairfield.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Fairfield</span>
                     <span class="score loser">72</span>
                 </div>
@@ -701,11 +774,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(7)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/creighton.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Creighton</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(10)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/purdue.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">Purdue</span>
                     <span class="score loser">72</span>
                 </div>
@@ -716,11 +791,13 @@
                 <div class="round-label">Round of 64 - Portland 4</div>
                 <div class="team-row">
                     <span class="seed">(2)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/iowa.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name winner">Iowa</span>
                     <span class="score winner">80</span>
                 </div>
                 <div class="team-row">
                     <span class="seed">(15)</span>
+                    <img class="team-logo" src="https://ncaa-api.henrygd.me/logo/stephen-f-austin.svg" alt="" width="20" height="20" onerror="this.style.display='none'">
                     <span class="team-name loser">SF Austin</span>
                     <span class="score loser">72</span>
                 </div>
@@ -773,7 +850,7 @@
 <!-- Footer -->
 <footer class="footer">
     <p class="tagline">This is the way.</p>
-    <p class="timestamp">Updated: March 22, 2026 at 12:41 PM EST</p>
+    <p class="timestamp">Updated: March 22, 2026 at 08:37 PM EST</p>
 </footer>
 
 <script>
