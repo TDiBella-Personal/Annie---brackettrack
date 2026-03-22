@@ -1,0 +1,41 @@
+name: Update Madness Tracker
+
+on:
+  schedule:
+    # 10:30 UTC = 5:30 AM EST (during EST)
+    # 09:30 UTC = 5:30 AM EDT (during EDT / March-April)
+    - cron: '30 9 * * *'
+  workflow_dispatch:  # manual trigger for testing
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install system fonts
+        run: sudo apt-get update && sudo apt-get install -y fonts-dejavu-core
+
+      - name: Build site
+        run: python build.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SPORTRADAR_API_KEY: ${{ secrets.SPORTRADAR_API_KEY }}
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output

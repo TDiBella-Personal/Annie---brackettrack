@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annie's Madness Tracker</title>
+    <style>
+        :root {
+            --bg-primary: #1a3a2a;
+            --bg-surface: #22422e;
+            --accent: #7ee8b0;
+            --accent-muted: #5cb88a;
+            --light: #d4f5e4;
+            --text-dark: #1a3a2a;
+            --white: #ffffff;
+            --eliminated: rgba(126, 232, 176, 0.35);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--accent);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 24px 20px 16px;
+            border-bottom: 2px solid var(--accent-muted);
+        }
+
+        .header svg { flex-shrink: 0; }
+
+        .header h1 {
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .updated-time {
+            font-size: 0.8rem;
+            color: var(--accent-muted);
+            text-align: center;
+            padding: 6px 0;
+        }
+
+        {% if stale %}.stale-warning {
+            background: #4a2a1a;
+            color: #ffb366;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }{% endif %}
+
+        /* Toggle */
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .toggle-btn {
+            padding: 10px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+        .toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+
+        .toggle-btn.active {
+            background: var(--accent);
+            color: var(--text-dark);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background: rgba(126, 232, 176, 0.15);
+        }
+
+        /* Sections */
+        .tournament-section { display: none; }
+        .tournament-section.active { display: block; }
+
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            color: var(--accent);
+            border-bottom: 1px solid var(--accent-muted);
+            padding-bottom: 8px;
+        }
+
+        /* Bracket image */
+        .bracket-container {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .bracket-img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid var(--accent-muted);
+            border-radius: 8px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 24px;
+            background: var(--light);
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover { background: var(--accent); }
+
+        /* Score cards */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .score-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--accent-muted);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .score-card .round-label {
+            font-size: 0.75rem;
+            color: var(--accent-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .score-card .team-row {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            gap: 8px;
+        }
+
+        .score-card .seed {
+            font-size: 0.8rem;
+            color: var(--accent-muted);
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .score-card .team-name {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .score-card .team-name.winner { color: var(--accent); }
+        .score-card .team-name.loser {
+            color: var(--eliminated);
+            text-decoration: line-through;
+        }
+
+        .score-card .score {
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .score-card .score.winner { color: var(--white); }
+        .score-card .score.loser { color: var(--eliminated); }
+
+        .score-card .game-info {
+            font-size: 0.75rem;
+            color: var(--accent-muted);
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        /* No games message */
+        .no-games {
+            text-align: center;
+            padding: 40px;
+            color: var(--accent-muted);
+            font-size: 1.1rem;
+        }
+
+        /* News */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .news-card {
+            background: var(--bg-surface);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 16px;
+        }
+
+        .news-card h3 {
+            font-size: 0.95rem;
+            color: var(--light);
+            margin-bottom: 8px;
+        }
+
+        .news-card p {
+            font-size: 0.82rem;
+            color: var(--accent-muted);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .news-card a {
+            font-size: 0.78rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .news-card a:hover { text-decoration: underline; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 2px solid var(--accent-muted);
+            margin-top: 24px;
+        }
+
+        .footer .tagline {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .footer .timestamp {
+            font-size: 0.75rem;
+            color: var(--accent-muted);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.4rem; }
+            .results-grid, .news-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="48" height="48">
+        <ellipse cx="15" cy="50" rx="18" ry="8" fill="#5cb88a" transform="rotate(-30 15 50)"/>
+        <ellipse cx="16" cy="50" rx="14" ry="5" fill="#7ee8b0" transform="rotate(-30 16 50)"/>
+        <ellipse cx="85" cy="50" rx="18" ry="8" fill="#5cb88a" transform="rotate(30 85 50)"/>
+        <ellipse cx="84" cy="50" rx="14" ry="5" fill="#7ee8b0" transform="rotate(30 84 50)"/>
+        <ellipse cx="50" cy="50" rx="28" ry="32" fill="#5cb88a"/>
+        <ellipse cx="50" cy="50" rx="26" ry="30" fill="#7ee8b0"/>
+        <ellipse cx="40" cy="45" rx="7" ry="8" fill="#1a3a2a"/>
+        <ellipse cx="42" cy="43" rx="2.5" ry="3" fill="#7ee8b0"/>
+        <ellipse cx="60" cy="45" rx="7" ry="8" fill="#1a3a2a"/>
+        <ellipse cx="62" cy="43" rx="2.5" ry="3" fill="#7ee8b0"/>
+        <path d="M 43 62 Q 50 67 57 62" stroke="#1a3a2a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M 35 75 Q 50 82 65 75" stroke="#5cb88a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <h1>Annie's Madness Tracker</h1>
+</header>
+
+<p class="updated-time">Last updated: {{ updated_time }}</p>
+
+{% if stale %}
+<div class="stale-warning">Data may be outdated - using cached results from {{ data_source }}</div>
+{% endif %}
+
+<!-- Tournament Toggle -->
+<div class="toggle-container">
+    <button class="toggle-btn active" onclick="switchTournament('mens')" id="btn-mens">Men's</button>
+    <button class="toggle-btn" onclick="switchTournament('womens')" id="btn-womens">Women's</button>
+</div>
+
+<!-- Men's Tournament -->
+<div class="tournament-section active" id="section-mens">
+
+    <!-- Full Bracket -->
+    <div class="section">
+        <h2>Full Bracket</h2>
+        <div class="bracket-container">
+            <img src="images/mens-full-bracket.png" alt="Men's Tournament Bracket" class="bracket-img">
+            <br>
+            <a href="images/mens-full-bracket.png" download="mens-bracket.png" class="download-btn">Download for Projection</a>
+        </div>
+    </div>
+
+    <!-- Today's Matchups -->
+    <div class="section">
+        <h2>Today's Matchups</h2>
+        <div class="bracket-container">
+            <img src="images/mens-today-view.png" alt="Men's Today's Games" class="bracket-img">
+            <br>
+            <a href="images/mens-today-view.png" download="mens-today.png" class="download-btn">Download for Projection</a>
+        </div>
+        {% if not mens_todays_games %}
+        <p class="no-games">No men's games scheduled today.</p>
+        {% endif %}
+    </div>
+
+    <!-- Last Night's Results -->
+    <div class="section">
+        <h2>Last Night's Results</h2>
+        {% if mens_last_results %}
+        <div class="results-grid">
+            {% for game in mens_last_results %}
+            <div class="score-card">
+                <div class="round-label">{{ game.round }}{% if game.region %} - {{ game.region }}{% endif %}</div>
+                <div class="team-row">
+                    <span class="seed">({{ game.home.seed }})</span>
+                    <span class="team-name {{ 'winner' if game.home.winner else 'loser' }}">{{ game.home.name }}</span>
+                    <span class="score {{ 'winner' if game.home.winner else 'loser' }}">{{ game.home.score }}</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">({{ game.away.seed }})</span>
+                    <span class="team-name {{ 'winner' if game.away.winner else 'loser' }}">{{ game.away.name }}</span>
+                    <span class="score {{ 'winner' if game.away.winner else 'loser' }}">{{ game.away.score }}</span>
+                </div>
+                <div class="game-info">{{ game.network }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-games">No recent results to show.</p>
+        {% endif %}
+    </div>
+
+    <!-- Tournament Stories -->
+    <div class="section">
+        <h2>Tournament Stories</h2>
+        <div class="news-grid">
+            {% for story in mens_news %}
+            <div class="news-card">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.summary }}</p>
+                <a href="{{ story.source_url }}" target="_blank" rel="noopener">{{ story.source_name }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Women's Tournament -->
+<div class="tournament-section" id="section-womens">
+
+    <!-- Full Bracket -->
+    <div class="section">
+        <h2>Full Bracket</h2>
+        <div class="bracket-container">
+            <img src="images/womens-full-bracket.png" alt="Women's Tournament Bracket" class="bracket-img">
+            <br>
+            <a href="images/womens-full-bracket.png" download="womens-bracket.png" class="download-btn">Download for Projection</a>
+        </div>
+    </div>
+
+    <!-- Today's Matchups -->
+    <div class="section">
+        <h2>Today's Matchups</h2>
+        <div class="bracket-container">
+            <img src="images/womens-today-view.png" alt="Women's Today's Games" class="bracket-img">
+            <br>
+            <a href="images/womens-today-view.png" download="womens-today.png" class="download-btn">Download for Projection</a>
+        </div>
+        {% if not womens_todays_games %}
+        <p class="no-games">No women's games scheduled today.</p>
+        {% endif %}
+    </div>
+
+    <!-- Last Night's Results -->
+    <div class="section">
+        <h2>Last Night's Results</h2>
+        {% if womens_last_results %}
+        <div class="results-grid">
+            {% for game in womens_last_results %}
+            <div class="score-card">
+                <div class="round-label">{{ game.round }}{% if game.region %} - {{ game.region }}{% endif %}</div>
+                <div class="team-row">
+                    <span class="seed">({{ game.home.seed }})</span>
+                    <span class="team-name {{ 'winner' if game.home.winner else 'loser' }}">{{ game.home.name }}</span>
+                    <span class="score {{ 'winner' if game.home.winner else 'loser' }}">{{ game.home.score }}</span>
+                </div>
+                <div class="team-row">
+                    <span class="seed">({{ game.away.seed }})</span>
+                    <span class="team-name {{ 'winner' if game.away.winner else 'loser' }}">{{ game.away.name }}</span>
+                    <span class="score {{ 'winner' if game.away.winner else 'loser' }}">{{ game.away.score }}</span>
+                </div>
+                <div class="game-info">{{ game.network }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="no-games">No recent results to show.</p>
+        {% endif %}
+    </div>
+
+    <!-- Tournament Stories -->
+    <div class="section">
+        <h2>Tournament Stories</h2>
+        <div class="news-grid">
+            {% for story in womens_news %}
+            <div class="news-card">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.summary }}</p>
+                <a href="{{ story.source_url }}" target="_blank" rel="noopener">{{ story.source_name }}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <p class="tagline">This is the way.</p>
+    <p class="timestamp">Updated: {{ updated_time }}</p>
+</footer>
+
+<script>
+function switchTournament(which) {
+    document.getElementById('section-mens').classList.toggle('active', which === 'mens');
+    document.getElementById('section-womens').classList.toggle('active', which === 'womens');
+    document.getElementById('btn-mens').classList.toggle('active', which === 'mens');
+    document.getElementById('btn-womens').classList.toggle('active', which === 'womens');
+}
+</script>
+
+</body>
+</html>
