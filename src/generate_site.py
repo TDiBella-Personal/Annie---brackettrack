@@ -6,8 +6,10 @@ from datetime import datetime
 
 from jinja2 import Environment, FileSystemLoader
 
+from src.team_logos import team_name_to_slug
 
-def generate_site(mens_data, womens_data, mens_news, womens_news, output_dir):
+
+def generate_site(mens_data, womens_data, mens_news, womens_news, output_dir, highlight_photos=None):
     """Generate the complete static site.
 
     Args:
@@ -16,12 +18,14 @@ def generate_site(mens_data, womens_data, mens_news, womens_news, output_dir):
         mens_news: list of news story dicts for men's tournament
         womens_news: list of news story dicts for women's tournament
         output_dir: directory to write output files
+        highlight_photos: list of highlight photo dicts (optional)
     """
     os.makedirs(output_dir, exist_ok=True)
 
     # Set up Jinja2
     template_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
     env = Environment(loader=FileSystemLoader(template_dir), autoescape=True)
+    env.filters["team_slug"] = team_name_to_slug
     template = env.get_template("index.html.j2")
 
     # Determine if data is stale
@@ -43,6 +47,7 @@ def generate_site(mens_data, womens_data, mens_news, womens_news, output_dir):
         womens_todays_games=womens_data.get("todays_games", []),
         womens_last_results=womens_data.get("last_results", []),
         womens_news=womens_news,
+        highlight_photos=highlight_photos or [],
     )
 
     # Write index.html

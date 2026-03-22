@@ -38,7 +38,7 @@ def _get_font(size, bold=False):
         return ImageFont.load_default()
 
 
-def _draw_team_slot(draw, x, y, w, h, name, seed, score="", is_winner=False, is_eliminated=False):
+def _draw_team_slot(draw, x, y, w, h, name, seed, score="", is_winner=False, is_eliminated=False, logo=None, img=None):
     """Draw a single team slot in the bracket."""
     # Background
     if is_winner:
@@ -59,8 +59,24 @@ def _draw_team_slot(draw, x, y, w, h, name, seed, score="", is_winner=False, is_
         seed_text = str(seed)
         draw.text((x + 4, y + (h - 14) // 2), seed_text, fill=MUTED if not is_eliminated else ELIMINATED_COLOR, font=seed_font)
 
+    # Logo
+    logo_offset = 0
+    if logo is not None and img is not None and name != "TBD":
+        try:
+            logo_size = min(h - 4, 20)
+            logo_resized = logo.resize((logo_size, logo_size), Image.LANCZOS)
+            logo_x = int(x + 22)
+            logo_y = int(y + (h - logo_size) // 2)
+            if logo_resized.mode == "RGBA":
+                img.paste(logo_resized, (logo_x, logo_y), logo_resized)
+            else:
+                img.paste(logo_resized, (logo_x, logo_y))
+            logo_offset = logo_size + 3
+        except Exception:
+            pass
+
     # Team name
-    name_x = x + 24
+    name_x = x + 24 + logo_offset
     name_text = name[:18]  # truncate long names
     draw.text((name_x, y + (h - 16) // 2), name_text, fill=text_color, font=font)
 
@@ -100,11 +116,13 @@ def _organize_bracket_data(bracket_state):
     return regions
 
 
-def render_full_bracket(bracket_state, gender, output_path):
+def render_full_bracket(bracket_state, gender, output_path, logos=None):
     """Render the full 68-team bracket as a 1920x1080 PNG.
 
     Layout: 2 regions on left, 2 on right, Final Four in center.
     """
+    if logos is None:
+        logos = {}
     img = Image.new("RGB", (IMG_W, IMG_H), BG_COLOR)
     draw = ImageDraw.Draw(img)
 
@@ -174,7 +192,8 @@ def render_full_bracket(bracket_state, gender, output_path):
                 ty = start_y + i * gap
                 _draw_team_slot(draw, r64_x, ty, slot_w - 5, slot_h, name, seed,
                                 is_winner=is_winner and not is_eliminated,
-                                is_eliminated=is_eliminated)
+                                is_eliminated=is_eliminated,
+                                logo=logos.get(name), img=img)
 
         # Round of 32 (8 slots)
         r32_x = rx + slot_w + 5 if direction == "left" else rx + rw - 2 * slot_w - 5
@@ -202,7 +221,8 @@ def render_full_bracket(bracket_state, gender, output_path):
             _draw_team_slot(draw, r32_x, ty, slot_w - 5, slot_h,
                             winner["name"], winner.get("seed", ""),
                             is_winner=not w_status.get("eliminated", False),
-                            is_eliminated=w_status.get("eliminated", False))
+                            is_eliminated=w_status.get("eliminated", False),
+                            logo=logos.get(winner["name"]), img=img)
 
             # Connector lines
             line_color = MUTED
@@ -265,11 +285,13 @@ def render_full_bracket(bracket_state, gender, output_path):
     return output_path
 
 
-def render_today_view(todays_games, bracket_state, gender, output_path):
+def render_today_view(todays_games, bracket_state, gender, output_path, logos=None):
     """Render today's matchups as a 1920x1080 PNG.
 
     Shows remaining teams and highlights today's games prominently.
     """
+    if logos is None:
+        logos = {}
     img = Image.new("RGB", (IMG_W, IMG_H), BG_COLOR)
     draw = ImageDraw.Draw(img)
 
@@ -334,7 +356,19 @@ def render_today_view(todays_games, bracket_state, gender, output_path):
             # Home team
             home_y = cy + 40
             draw.text((cx + 15, home_y + 3), f"({home.get('seed', '?')})", fill=MUTED, font=seed_font)
-            draw.text((cx + 50, home_y), home.get("name", "TBD"), fill=LIGHT, font=team_font)
+            home_name_x = cx + 50
+            home_logo = logos.get(home.get("name", ""))
+            if home_logo is not None:
+                try:
+                    hl = home_logo.resize((24, 24), Image.LANCZOS)
+                    if hl.mode == "RGBA":
+                        img.paste(hl, (int(home_name_x), int(home_y)), hl)
+                    else:
+                        img.paste(hl, (int(home_name_x), int(home_y)))
+                    home_name_x += 28
+                except Exception:
+                    pass
+            draw.text((home_name_x, home_y), home.get("name", "TBD"), fill=LIGHT, font=team_font)
 
             if home.get("score"):
                 score_font = _get_font(22, bold=True)
@@ -351,7 +385,19 @@ def render_today_view(todays_games, bracket_state, gender, output_path):
             # Away team
             away_y = cy + 90
             draw.text((cx + 15, away_y + 3), f"({away.get('seed', '?')})", fill=MUTED, font=seed_font)
-            draw.text((cx + 50, away_y), away.get("name", "TBD"), fill=LIGHT, font=team_font)
+            away_name_x = cx + 50
+            away_logo = logos.get(away.get("name", ""))
+            if away_logo is not None:
+                try:
+                    al = away_logo.resize((24, 24), Image.LANCZOS)
+                    if al.mode == "RGBA":
+                        img.paste(al, (int(away_name_x), int(away_y)), al)
+                    else:
+                        img.paste(al, (int(away_name_x), int(away_y)))
+                    away_name_x += 28
+                except Exception:
+                    pass
+            draw.text((away_name_x, away_y), away.get("name", "TBD"), fill=LIGHT, font=team_font)
 
             if away.get("score"):
                 score_font = _get_font(22, bold=True)
@@ -404,12 +450,14 @@ def _determine_active_round(bracket_state):
         return "Full Bracket", []  # No zoom needed, still in round of 64
 
 
-def render_zoom_bracket(bracket_state, gender, output_path):
+def render_zoom_bracket(bracket_state, gender, output_path, logos=None):
     """Render a zoomed bracket showing only the active/populated rounds.
 
     Once all Sweet 16 teams are known, shows Sweet 16 -> Championship.
     Once all Elite 8 teams are known, shows Elite 8 -> Championship. Etc.
     """
+    if logos is None:
+        logos = {}
     img = Image.new("RGB", (IMG_W, IMG_H), BG_COLOR)
     draw = ImageDraw.Draw(img)
 
@@ -478,7 +526,8 @@ def render_zoom_bracket(bracket_state, gender, output_path):
             ty = semi_y[col] + row * (slot_h + 40)
             _draw_team_slot(draw, tx, ty, slot_w, slot_h,
                             team["name"], team.get("seed", ""),
-                            is_winner=True)
+                            is_winner=True,
+                            logo=logos.get(team["name"]), img=img)
 
         # Championship slot
         champ_x = IMG_W // 2 - slot_w // 2
@@ -525,7 +574,8 @@ def render_zoom_bracket(bracket_state, gender, output_path):
                 ty = ry + 24 + ti * team_gap
                 _draw_team_slot(draw, rx, ty, slot_w, slot_h,
                                 team["name"], team.get("seed", ""),
-                                is_winner=True)
+                                is_winner=True,
+                                logo=logos.get(team["name"]), img=img)
 
             # Elite 8 / Final 4 slots to the right (or left for right-side regions)
             if len(rteams) >= 2:
@@ -592,7 +642,8 @@ def render_zoom_bracket(bracket_state, gender, output_path):
                 ty = ry + 24 + ti * gap
                 _draw_team_slot(draw, r32_x, ty, sw, slot_h,
                                 team["name"], team.get("seed", ""),
-                                is_winner=True)
+                                is_winner=True,
+                                logo=logos.get(team["name"]), img=img)
 
             # Sweet 16 slots with connector lines
             s16_x = rx + col_w + 5 if direction == "left" else rx + rw - 2 * col_w - 5
@@ -649,45 +700,57 @@ def render_zoom_bracket(bracket_state, gender, output_path):
     return output_path
 
 
-def render_all_brackets(mens_data, womens_data, output_dir):
-    """Render all 4 bracket images.
+def render_all_brackets(mens_data, womens_data, output_dir, mens_logos=None, womens_logos=None):
+    """Render all bracket images.
 
     Args:
         mens_data: dict from fetch_tournament_data for men
         womens_data: dict from fetch_tournament_data for women
         output_dir: directory to save images
+        mens_logos: dict mapping team name -> PIL Image for men's teams
+        womens_logos: dict mapping team name -> PIL Image for women's teams
 
     Returns:
         dict mapping image names to file paths
     """
     os.makedirs(output_dir, exist_ok=True)
+    if mens_logos is None:
+        mens_logos = {}
+    if womens_logos is None:
+        womens_logos = {}
 
     paths = {}
 
     paths["mens_full"] = render_full_bracket(
         mens_data["bracket_state"], "men",
         os.path.join(output_dir, "mens-full-bracket.png"),
+        logos=mens_logos,
     )
     paths["mens_today"] = render_today_view(
         mens_data["todays_games"], mens_data["bracket_state"], "men",
         os.path.join(output_dir, "mens-today-view.png"),
+        logos=mens_logos,
     )
     paths["womens_full"] = render_full_bracket(
         womens_data["bracket_state"], "women",
         os.path.join(output_dir, "womens-full-bracket.png"),
+        logos=womens_logos,
     )
     paths["womens_today"] = render_today_view(
         womens_data["todays_games"], womens_data["bracket_state"], "women",
         os.path.join(output_dir, "womens-today-view.png"),
+        logos=womens_logos,
     )
 
     paths["mens_zoom"] = render_zoom_bracket(
         mens_data["bracket_state"], "men",
         os.path.join(output_dir, "mens-zoom-bracket.png"),
+        logos=mens_logos,
     )
     paths["womens_zoom"] = render_zoom_bracket(
         womens_data["bracket_state"], "women",
         os.path.join(output_dir, "womens-zoom-bracket.png"),
+        logos=womens_logos,
     )
 
     return paths
